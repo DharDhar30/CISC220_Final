@@ -217,7 +217,6 @@ bool Game::playMaze() {
         cout << "Column = " << knightColumn << "\n";
         cout << "Current cell: maze[" << knightRow;
         cout << "][" << knightColumn << "]\n";
-
         cout << "\nMove (W/A/S/D), H for hint, Q to quit: ";
 
         char move;
