@@ -143,9 +143,35 @@ void Game::play() {
         cout << "Final score: " << score << "\n";
     }
 }
+void Game::playTestLevel(int selectedLevel) {
+    bool completed = false;
+    gameOver = false;
+    cout << "\nTEST MODE: Starting Level "
+         << selectedLevel << "\n";
+    if (selectedLevel == 1) {
+        completed = playMaze();
+    } else if (selectedLevel == 2) {
+        completed = playStack();
+    } else if (selectedLevel == 3) {
+        completed = playHashMap();
+    } else if (selectedLevel == 4) {
+        completed = playLinkedList();
+    } else if (selectedLevel == 5) {
+        completed = playGraph();
+    } else if (selectedLevel == 6) {
+        completed = playTree();
+    } else {
+        cout << "Invalid level number.\n";
+        return;
+    }
+    if (completed) {
+        cout << "\nTEST RESULT: Level completed!\n";
+    } else {
+        cout << "\nTEST RESULT: Level ended without completion.\n";
+    }
+}
 
-
- // LEVEL 1: TWO-DIMENSIONAL ARRAY
+ // LEVEL 1- TWO-DIMENSIONAL ARRAY
 bool Game::playMaze() {
     cout << "       LEVEL 1: THE BROKEN MAZE\n";
 
@@ -197,7 +223,6 @@ bool Game::playMaze() {
         cout << "\n";
         cout << "      COLUMNS\n";
         cout << "      0 1 2 3 4 5 6 7 8\n";
-
         for (int r = 0; r < 7; r++) {
             cout << "ROW " << r << "  ";
 
@@ -289,93 +314,101 @@ bool Game::playMaze() {
 
 // LEVEL 2: STACK
 bool Game::playStack() {
-    cout << "\nLEVEL 2: THE TOWER OF TRIALS\n";
-    cout << "DATA STRUCTURE: STACK\n\n";
+       cout << "\nLEVEL 2: The tower of trials!!! z\n";
+    cout << "The tower is collapsing! Retrieve the key safely.\n";
+    cout << "You can only access the TOP of the stack.\n";
+    cout << "Commands: S = push an item, P = pop, H = hint, Q = quit.\n\n";
 
-    cout << "A stack follows LIFO: Last In, First Out.\n";
-    cout << "New items are pushed onto the top.\n";
-    cout << "Only the top item can be popped off.\n\n";
-
-    int items[4];
+    int items[5];
     int top = -1;
+    bool hasKey = false;
+    bool escaped = false;
+    while (!gameOver && !escaped) {
+        cout << "\nSTACK (TOP FIRST)\n";
 
-    // Push items onto the stack.
-    items[++top] = 1; // Treasure
-    items[++top] = 2; // Shield
-    items[++top] = 3; // Potion
-    items[++top] = 4; // Cursed Stone
-
-    cout << "The items were pushed in this order:\n";
-    cout << "Treasure, Shield, Potion, Cursed Stone.\n";
-    cout << "The last item pushed is now on top.\n\n";
-
-    cout << "Which item will be removed first?\n";
-    cout << "1. Treasure\n";
-    cout << "2. Shield\n";
-    cout << "3. Potion\n";
-    cout << "4. Cursed Stone\n";
-    cout << "Answer: ";
-
-    int answer;
-    cin >> answer;
-
-    if (answer == 4) {
-        cout << "Correct! The Cursed Stone is on top.\n";
-        score += 5;
-    } else {
-        cout << "Incorrect. The Cursed Stone was pushed last, ";
-        cout << "so it is removed first.\n";
-    }
-
-    cout << "\nRemove items from the top to reach the treasure.\n";
-
-    while (top >= 0 && !gameOver) {
-        cout << "\nTop item: ";
-
-        if (items[top] == 4) {
-            cout << "Cursed Stone";
-        } else if (items[top] == 3) {
-            cout << "Potion";
-        } else if (items[top] == 2) {
-            cout << "Shield";
+        if (top == -1) {
+            cout << "[ EMPTY ]\n";
         } else {
-            cout << "Treasure";
-        }
+            for (int i = top; i >= 0; i--) {
+                cout << "| ";
 
-        cout << "\nEnter 1 to pop the top item, H for hint, Q to quit: ";
+                if (items[i] == 1) cout << "Shield";
+                else if (items[i] == 2) cout << "Royal Key";
+                else if (items[i] == 3) cout << "Cursed Stone";
+                else cout << "Potion";
+
+                cout << " |\n";
+            }
+            cout << "---------";
+        }
+        cout << "\nItems available to collect:\n";
+        cout << "1 = Shield\n";
+        cout << "2 = Royal Key\n";
+        cout << "3 = Cursed Stone\n";
+        cout << "4 = Potion\n";
+        cout << "Choose S, P, H, or Q: ";
 
         char choice;
         cin >> choice;
-        if (askForHelp(choice)) {
-            if (gameOver) return false;
+
+        if (choice == 'H' || choice == 'h') {
+            askForHelp(choice);
+            cout << "Hint: The last item pushed is the first item popped.\n";
             continue;
         }
-
-        if (choice != '1') {
-            cout << "Enter 1 to pop the top item.\n";
-            continue;
+        if (choice == 'Q' || choice == 'q') {
+            askForHelp(choice);
+            return false;
         }
+        if (choice == 'S' || choice == 's') {
+            if (top == 4) {
+                cout << "Your stack is full!\n";
+                continue;
+            }
+            cout << "Which item do you want to push? Enter 1-4: ";
+            int item;
+            cin >> item;
+            if (item < 1 || item > 4) {
+                cout << "That item does not exist.\n";
+                continue;
+            }
 
-        int removed = items[top];
-        top--;
+            if (item == 3) {
+                cout << "You cannot collect the cursed stone. It is too dangerous!\n";
+                continue;
+            }
 
-        cout << "You popped item number " << removed << ".\n";
+            items[++top] = item;
+            cout << "PUSH: item added at index " << top << ".\n";
+        } else if (choice == 'P' || choice == 'p') {
+            if (top == -1) {
+                cout << "The stack is empty. Nothing to pop!\n";
+                continue;
+            }
 
-        if (removed == 4) {
-            cout << "The Cursed Stone! It costs you a life.\n";
-            loseLife();
-        } else if (removed == 1) {
-            cout << "You reached the treasure!\n";
-            return true;
+            int item = items[top--];
+
+            if (item == 2) {
+                hasKey = true;
+                cout << "You retrieved the Royal Key!\n";
+            } else if (item == 1) {
+                cout << "You removed the Shield.\n";
+            } else {
+                cout << "You removed the Potion.\n";
+            }
+            cout << "POP: top index decreased to " << top << ".\n";
+
+            if (hasKey) {
+                cout << "\nYou unlock the tower exit and escape!\n";
+                escaped = true;
+            }
+        } else {
+            cout << "Invalid command.\n";
         }
-
-        cout << "Stack size remaining: " << top + 1 << "\n";
     }
-
-    return false;
+    if (gameOver) return false;
+    return escaped;
 }
-
-
 // LEVEL 3: HASH MAP
 int Game::hashFunction(int key) {
     return key % 10;
@@ -507,7 +540,6 @@ bool Game::playHashMap() {
 }
 
 // LEVEL 4: LINKED LIST
-
 Game::ListNode* Game::createList() {
     ListNode* first = new ListNode;
     ListNode* second = new ListNode;
@@ -749,14 +781,14 @@ bool Game::searchTree(TreeNode* root, int target, int& comparisons) {
 
     comparisons++;
     cout << "Compare target " << target;
-    cout << " with node " << root->data << ".\n";
+    cout << " with node " << root->data << ".";
 
     if (root->data == target) {
         return true;
     }
 
     if (target < root->data) {
-        cout << "Target is smaller. Go LEFT.\n";
+        cout << "Target is smaller. Go LEFT.";
         return searchTree(root->left, target, comparisons);
     }
 
@@ -775,28 +807,28 @@ void Game::deleteTree(TreeNode* root) {
 }
 
 bool Game::playTree() {
-    cout << "\nLEVEL 6: THE PRINCESS'S CASTLE\n";
-    cout << "DATA STRUCTURE: BINARY SEARCH TREE\n\n";
+    cout << "\nLEVEL 6: THE PRINCESS'S CASTLE";
+    cout << "DATA STRUCTURE: BINARY SEARCH TREE";
 
-    cout << "Smaller values go left; larger values go right.\n";
-    cout << "Each comparison tells you which direction to search.\n";
-    cout << "Find node 60 to rescue the princess!\n\n";
+    cout << "Smaller values go left; larger values go right.";
+    cout << "Each comparison tells you which direction to search.";
+    cout << "Find node 60 to rescue the princess!";
 
-    cout << "Knowledge check:\n";
-    cout << "You are at node 50. Your target is 60.\n";
-    cout << "Which direction should you go?\n";
-    cout << "1. Left\n";
-    cout << "2. Right\n";
+    cout << "Knowledge check:";
+    cout << "You are at node 50. Your target is 60.";
+    cout << "Which direction should you go?";
+    cout << "1. Left";
+    cout << "2. Right";
     cout << "Answer: ";
 
     int answer;
     cin >> answer;
 
     if (answer == 2) {
-        cout << "Correct! 60 is greater than 50, so go right.\n";
+        cout << "Correct! 60 is greater than 50, so go right.";
         score += 5;
     } else {
-        cout << "60 is greater than 50, so you must go right.\n";
+        cout << "60 is greater than 50, so you must go right.";
     }
 
     TreeNode* root = 0;
@@ -832,7 +864,7 @@ bool Game::playTree() {
         }
 
         if (choice < '0' || choice > '9') {
-            cout << "Enter a number such as 60.\n";
+            cout << "Enter a number such as 60.";
             continue;
         }
 
@@ -845,7 +877,7 @@ bool Game::playTree() {
             cin >> second;
 
             if (second < '0' || second > '9') {
-                cout << "Invalid digit.\n";
+                cout << "Invalid digit.";
                 continue;
             }
 
@@ -864,7 +896,7 @@ bool Game::playTree() {
             return true;
         }
         if (found) {
-            cout << "That node exists, but the princess is at 60.\n";
+            cout << "That node exists, but check where the princess is (she is at node 60).\n";
         } else {
             cout << "That value is not in the tree.\n";
         }

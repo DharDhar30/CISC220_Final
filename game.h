@@ -63,6 +63,7 @@ private:
 public:
     Game();
     void play();
+    void playTestLevel(int selectedLevel);
 };
 
 #endif
