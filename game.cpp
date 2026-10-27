@@ -31,7 +31,6 @@ Game::Game() {
     maze[5][7] = 'E';
     setupHashTable();
 }
-
 void Game::showStatus() {
     cout << "\n-----------------------------\n";
     cout << "Level: " << level << " / 6\n";
@@ -460,185 +459,200 @@ const char* Game::searchHash(int key) {
     return "NOT FOUND";
 }
 
+
 bool Game::playHashMap() {
-    cout << "\nLEVEL 3: THE LOCKED GATE\n";
-    cout << "DATA STRUCTURE: HASH MAP\n\n";
+    cout << "\n=== LEVEL 3: THE LOCKED GATE ===\n";
+    cout << "The gate's security system uses a hash table.\n";
+    cout << "Hash function: key % 10\n";
+    cout << "A collision happens when two keys want the same index.\n\n";
+    setupHashTable();
+    bool unlocked = false;
+    int attempts = 0;
 
-    cout << "A hash map stores key-value pairs.\n";
-    cout << "A hash function converts a key into an array index.\n";
-    cout << "If two keys collide, this table uses linear probing.\n\n";
-
-    cout << "Knowledge check:\n";
-    cout << "What does a hash map use to find a stored value?\n";
-    cout << "1. A key\n";
-    cout << "2. The last item inserted\n";
-    cout << "3. The smallest number\n";
-    cout << "Answer: ";
-
-    int answer;
-    cin >> answer;
-
-    if (answer == 1) {
-        cout << "Correct! A key is used to look up its value.\n";
-        score += 5;
-    } else {
-        cout << "A hash map uses a key to look up its value.\n";
-    }
-
-    cout << "\nFind the Royal Key to open the gate.\n";
-    cout << "Available keys: 12, 25, 37, 48\n";
-
-    while (!gameOver) {
-        cout << "Enter a key, H for hint, or Q to quit: ";
-
-        char choice;
-        cin >> choice;
-
-        if (askForHelp(choice)) {
-            if (gameOver) return false;
-            continue;
-        }
-
-        if (choice < '0' || choice > '9') {
-            cout << "Please enter a numeric key.\n";
-            continue;
-        }
-
-        int key = choice - '0';
-
-        // Allow two-digit keys.
-        if (key == 1 || key == 2 || key == 3 || key == 4) {
-            cout << "Enter the second digit: ";
-            char second;
-            cin >> second;
-
-            if (second < '0' || second > '9') {
-                cout << "Invalid second digit.\n";
-                continue;
+    while (!gameOver && !unlocked && attempts < 6) {
+        cout << "\nHASH TABLE\n";
+        for (int i = 0; i < 10; i++) {
+            cout << "[" << i << "] ";
+            if (hashTable[i].occupied) {
+                cout << hashTable[i].key << ": " << hashTable[i].value;
+            } else {
+                cout << "EMPTY";
             }
-
-            key = key * 10 + (second - '0');
+            cout << "\n";
         }
+        cout << "\nThe Royal Key has key 37.\n";
+        cout << "Enter the key you want to search for (H for hint, Q to quit): ";
+        char first;
+        cin >> first;
+
+        if (first == 'H' || first == 'h') {
+            askForHelp(first);
+            cout << "Hint: 37 % 10 = 7. Follow the table's probing rules.\n";
+            continue;
+        }
+
+        if (first == 'Q' || first == 'q') {
+            askForHelp(first);
+            return false;
+        }
+        if (first < '0' || first > '9') {
+            cout << "Enter a numeric key, H, or Q.\n";
+            continue;
+        }
+
+        int key = first - '0';
+        char second;
+        cin >> second;
+
+        if (second < '0' || second > '9') {
+            cout << "Enter a two-digit key.\n";
+            continue;
+        }
+
+        key = key * 10 + (second - '0');
+        attempts++;
 
         int index = hashFunction(key);
+        cout << "Hash calculation: " << key << " % 10 = " << index << "\n";
+        bool found = false;
 
-        cout << "Hash function: " << key << " % 10 = ";
-        cout << index << "\n";
+        for (int i = 0; i < 10; i++) {
+            int current = (index + i) % 10;
 
-        const char* result = searchHash(key);
-        cout << "Lookup result: " << result << "\n";
+            cout << "Checking index " << current << ": ";
 
-        if (key == 37) {
-            cout << "The Royal Key opens the gate!\n";
-            return true;
+            if (!hashTable[current].occupied) {
+                cout << "EMPTY. Search stops here.\n";
+                break;
+            }
+
+            cout << hashTable[current].key << "\n";
+
+            if (hashTable[current].key == key) {
+                found = true;
+                break;
+            }
+            cout << "Collision with another key. Probe the next index.\n";
         }
 
-        cout << "That is not the Royal Key. Try again.\n";
+        if (found && key == 37) {
+            cout << "\nThe gate opens! You found the Royal Key.\n";
+            unlocked = true;
+        } else {
+            cout << "That did not unlock the gate.\n";
+        }
     }
 
-    return false;
-}
+    if (gameOver) return false;
 
-// LEVEL 4: LINKED LIST
-Game::ListNode* Game::createList() {
-    ListNode* first = new ListNode;
-    ListNode* second = new ListNode;
-    ListNode* third = new ListNode;
-    ListNode* fourth = new ListNode;
-
-    first->data = 2;
-    first->next = second;
-
-    second->data = 4;
-    second->next = third;
-
-    third->data = 1;
-    third->next = fourth;
-
-    fourth->data = 5;
-    fourth->next = 0;
-
-    return first;
-}
-
-void Game::deleteList(ListNode* head) {
-    while (head != 0) {
-        ListNode* nextNode = head->next;
-        delete head;
-        head = nextNode;
+    if (!unlocked) {
+        cout << "The gate remains locked. Try again on your next attempt.\n";
+        return false;
     }
 }
 
 bool Game::playLinkedList() {
-    cout << "\nLEVEL 4: THE BROKEN RIVER\n";
-    cout << "DATA STRUCTURE: LINKED LIST\n\n";
-
-    cout << "Each linked-list node stores data and a next pointer.\n";
-    cout << "The pointer tells you which node comes next.\n";
-    cout << "The last node points to 0, meaning no next node.\n\n";
-
-    cout << "Knowledge check:\n";
-    cout << "What does a node's next pointer identify?\n";
-    cout << "1. The previous node\n";
-    cout << "2. The next node\n";
-    cout << "Answer: ";
-
-    int answer;
-    cin >> answer;
-
-    if (answer == 2) {
-        cout << "Correct! The next pointer connects the nodes.\n";
-        score += 5;
-    } else {
-        cout << "The next pointer identifies the next node.\n";
-    }
+    cout << "LEVEL 4: THE BROKEN RIVER";
+    cout << "The river crossing has a broken pointer!\n";
+    cout << "Repair the linked list to reach node 5.\n\n";
 
     ListNode* head = createList();
-    ListNode* current = head;
 
-    cout << "\nCross the river by following the linked nodes.\n";
+    // The original list is 2 -> 4 -> 1 -> 5.
+    // I deliberately break the link from node 4.
+    ListNode* node = head;
 
-    while (current != 0 && !gameOver) {
-        cout << "\nCurrent node: " << current->data << "\n";
-        cout << "Enter the next stone number, H for hint, Q to quit: ";
+    while (node != nullptr && node->data != 4) {
+        node = node->next;
+    }
+    if (node != nullptr) {
+        node->next = nullptr;
+    }
+    bool repaired = false;
+    while (!gameOver && !repaired) {
+        cout << "\nCURRENT LINKED LIST\n";
+        ListNode* current = head;
+
+        while (current != nullptr) {
+            cout << "[" << current->data << "] -> ";
+            current = current->next;
+        }
+
+        cout << "NULL\n\n";
+        cout << "1. Inspect the list\n";
+        cout << "2. Repair the link from node 4 to node 1\n";
+        cout << "3. Try crossing the river\n";
+        cout << "H. Hint\n";
+        cout << "Q. Quit\n";
+        cout << "Choice: ";
 
         char choice;
         cin >> choice;
 
-        if (askForHelp(choice)) {
-            if (gameOver) {
-                deleteList(head);
-                return false;
+        if (choice == 'H' || choice == 'h') {
+            askForHelp(choice);
+            cout << "Hint: Find node 4 and change its next pointer.\n";
+        } else if (choice == 'Q' || choice == 'q') {
+            askForHelp(choice);
+            deleteList(head);
+            return false;
+        } else if (choice == '1') {
+            cout << "Each node stores data and a pointer called next.\n";
+            cout << "NULL means the list ends at that node.\n";
+        } else if (choice == '2') {
+            ListNode* four = head;
+            ListNode* one = head;
+
+            while (four != nullptr && four->data != 4) {
+                four = four->next;
             }
-            continue;
-        }
 
-        if (choice < '0' || choice > '9') {
-            cout << "Enter the stone number.\n";
-            continue;
-        }
+            // Node 1 exists later in the original list, but is currently broken
+            //Rebuild the missing node for this repair
+            if (four != nullptr && four->next == nullptr) {
+                one = new ListNode;
+                one->data = 1;
+                one->next = new ListNode;
+                one->next->data = 5;
+                one->next->next = nullptr;
 
-        int chosen = choice - '0';
+                four->next = one;
+                repaired = true;
 
-        if (chosen != current->data) {
-            cout << "Wrong stone! Follow the current node.\n";
-            loseLife();
-            current = head;
-            cout << "Start again from the first node.\n";
+                cout << "Pointer repaired! Node 4 now points to node 1.\n";
+            } else {
+                cout << "That link does not need repair.\n";
+            }
+        } else if (choice == '3') {
+            ListNode* current = head;
+
+            cout << "Following next pointers: ";
+
+            while (current != nullptr) {
+                cout << current->data << " ";
+
+                if (current->data == 5) {
+                    repaired = true;
+                    break;
+                }
+
+                current = current->next;
+            }
+            if (repaired) {
+                cout << "\nYou reached the safe bank!\n";
+            } else {
+                cout << "\nThe list ends too early. Repair the missing link.\n";
+            }
         } else {
-            cout << "Correct node!\n";
-            current = current->next;
+            cout << "Invalid choice.\n";
         }
     }
-
     deleteList(head);
 
-    if (!gameOver) {
-        cout << "You followed the linked list across the river!\n";
-        return true;
-    }
+    if (gameOver) return false;
 
-    return false;
+    cout << "LESSON: A linked list's route is determined by its next pointers.\n";
+    return repaired;
 }
 
 // LEVEL 5: GRAPH AND DIJKSTRA'S ALGORITHM
@@ -717,9 +731,7 @@ bool Game::playGraph() {
         for (int next = 0; next < 4; next++) {
             if (graph[nearest][next] > 0 &&
                 distance[nearest] + graph[nearest][next] < distance[next]) {
-                distance[next] =
-                    distance[nearest] + graph[nearest][next];
-
+                distance[next] =distance[nearest]+graph[nearest][next];
                 cout << "  Update cost to ";
                 cout << char('A' + next) << ": ";
                 cout << distance[next] << "\n";
@@ -906,4 +918,30 @@ bool Game::playTree() {
 
     deleteTree(root);
     return false;
+}
+
+
+Game::ListNode* Game::createList() {
+    ListNode* head = new ListNode;
+    head->data = 2;
+
+    head->next = new ListNode;
+    head->next->data = 4;
+
+    head->next->next = new ListNode;
+    head->next->next->data = 1;
+
+    head->next->next->next = new ListNode;
+    head->next->next->next->data = 5;
+
+    head->next->next->next->next = nullptr;
+
+    return head;
+}
+void Game::deleteList(ListNode* head) {
+    while (head != nullptr) {
+        ListNode* nextNode = head->next;
+        delete head;
+        head = nextNode;
+    }
 }

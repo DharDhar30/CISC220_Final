@@ -8,6 +8,15 @@ private:
     int score;
     int level;
     bool gameOver;
+    bool codeChallenge(
+    const char* title,
+    const char* code,
+    const char* option1,
+    const char* option2,
+    const char* option3,
+    int correctAnswer,
+    const char* explanation
+);
 
     // Level 1: Two-dimensional array.
     char maze[7][9];
