@@ -1,10 +1,90 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Knight's Quest</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
-</body>
-</html>
+<body>
+<div class="game-container">
+
+    <header class="game-header">
+        <p class="subtitle">A DATA STRUCTURES ADVENTURE</p>
+        <h1>The Knight's Quest</h1>
+        <p class="description">
+            Master six data structures, unlock the castle,
+            and rescue the princess.
+        </p>
+    </header>
+
+    <main>
+        <section class="status-bar">
+            <div class="status-item">
+                <span class="status-label">LEVEL</span>
+                <span id="level-number">1 / 6</span>
+            </div>
+
+            <div class="status-item">
+                <span class="status-label">SCORE</span>
+                <span id="score">0</span>
+            </div>
+
+            <div class="status-item">
+                <span class="status-label">QUEST</span>
+                <span id="quest-status">In Progress</span>
+            </div>
+        </section>
+
+        <section class="game-panel">
+            <div class="panel-heading">
+                <span class="panel-icon">♜</span>
+                <div>
+                    <h2 id="level-title">The Broken Maze</h2>
+                    <p id="data-structure">2D Array</p>
+                </div>
+            </div>
+
+            <div id="game-screen" class="game-screen">
+                <p class="system-message">
+                    Welcome, brave knight!
+                </p>
+                <p>
+                    Your journey begins at the castle entrance.
+                    Solve each challenge to reach the princess.
+                </p>
+                <p class="prompt">
+                    Select Start Quest when you are ready.
+                </p>
+            </div>
+
+            <div class="input-area">
+                <label for="player-input">Your move</label>
+
+                <div class="input-row">
+                    <input
+                            type="text"
+                            id="player-input"
+                            placeholder="Enter your answer..."
+                            autocomplete="off"
+                    >
+
+                    <button id="submit-button" type="button">
+                        Submit
+                    </button>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="start-button" type="button">
+                        Start Quest
+                    </button>
+
+                    <button id="hint-button" type="button">
+                        Get a Hint
+                    </button>
+                </div>
+            </div>
+        </section>
+
