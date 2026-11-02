@@ -12,15 +12,17 @@ Game::Game() {
     knightColumn = 1;
 
     // "#" means wall "." means open path, E means exit.
+
     const char* rows[7] = {
         "#########",
-        "#.......#",
+        "#..$....#",
         "#.###...#",
-        "#...#...#",
+        "#S..#.$.#",
         "###.#.###",
-        "#.......#",
+        "#...H...#",
         "#########"
     };
+
 
     for (int r = 0; r < 7; r++) {
         for (int c = 0; c < 9; c++) {
