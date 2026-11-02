@@ -175,8 +175,11 @@ void Game::playTestLevel(int selectedLevel) {
 bool Game::playMaze() {
     cout << "       LEVEL 1: THE BROKEN MAZE\n";
 
-    cout << "LEARN: TWO-DIMENSIONAL ARRAYS\n\n";
+    cout << "The knight is trapped inside an ancient maze.\n";
+    cout << "The map is stored inside a two-dimensional array.\n";
+    cout << "Learn how the array works to find your way out!\n";
 
+    cout << "QUICK LESS: UNDERSTAND THE ARRAY"
     cout << "A 2D array stores information in rows and columns.\n";
     cout << "Our maze is stored in maze[7][9].\n";
     cout << "That means 7 rows and 9 columns.\n\n";
@@ -189,38 +192,72 @@ bool Game::playMaze() {
     cout << "- The second index identifies the column.\n";
     cout << "- Array indexes start at 0, not 1.\n\n";
 
-    cout << "For example, maze[1][2] means row 1, column 2.\n";
-    cout << "The character stored there tells us what is in that cell.\n\n";
+    cout << "\nYOUR FIRST CODING CHALLENGE\n";
+    cout << "The knight starts at row 3, column 1.\n";
+    cout << "Complete this expression to access the knight's cell:\n\n";
+    cout << "maze[________][________];\n\n";
 
-    cout << "KNOWLEDGE CHECK\n";
-    cout << "What does maze[2][4] represent?\n";
-    cout << "1. Row 4, column 2\n";
-    cout << "2. Row 2, column 4\n";
-    cout << "3. The fourth row and fifth column\n";
-    cout << "Answer: ";
+    string rowAnswer;
+    string columnAnswer;
+    int attempts = 0;
+    bool indexCorrect = false;
 
-    int answer;
-    cin >> answer;
+    while (!indexCorrect && attempts < 3 && !gameOver) {
+        cout << "Enter the first index: ";
+        cin >> rowAnswer;
 
-    if (answer == 2) {
-        cout << "\nCorrect! The first index is the row, ";
-        cout << "and the second index is the column.\n";
-        score += 5;
-        cout << "You earned 5 points!\n";
-    } else {
-        cout << "\nNot quite. The correct answer is 2.\n";
-        cout << "maze[2][4] means row 2, column 4.\n";
-        cout << "Both indexes start counting at 0.\n";
+        if (rowAnswer == "H" || rowAnswer == "h") {
+            cout << "Hint: The first index represents the row.\n";
+            continue;
+        }
+
+        cout << "Enter the second index: ";
+        cin >> columnAnswer;
+
+        if (columnAnswer == "H" || columnAnswer == "h") {
+            cout << "Hint: The second index represents the column.\n";
+            continue;
+        }
+
+        if (rowAnswer == "knightRow" &&
+            columnAnswer == "knightColumn") {
+            indexCorrect = true;
+            cout << "\nCorrect! Your completed code is:\n";
+            cout << "maze[knightRow][knightColumn];\n";
+            cout << "This accesses the cell where the knight is standing.\n";
+            score += 5;
+            cout << "You earned 5 points!\n";
+            } else {
+                attempts++;
+                cout << "\nNot quite. Remember:\n";
+                cout << "First index = row.\n";
+                cout << "Second index = column.\n";
+            }
     }
 
-    cout << "\nYOUR MISSION\n";
-    cout << "Guide K to the exit E without walking into walls.\n";
-    cout << "Every move checks a specific position in the array.\n";
-    cout << "W = up, A = left, S = down, D = right.\n";
-    cout << "H = hint, Q = quit.\n";
+    if (gameOver) {
+        return false;
+    }
+
+    if (!indexCorrect) {
+        cout << "\nThe correct expression is:\n";
+        cout << "maze[knightRow][knightColumn];\n";
+        cout << "Let's use this expression as we explore.\n";
+    }
+    cout << "\nHOW TO PLAY\n";
+    cout << "W = Move up\n";
+    cout << "A = Move left\n";
+    cout << "S = Move down\n";
+    cout << "D = Move right\n";
+    cout << "H = Hint\n";
+    cout << "Q = Quit\n";
+
+    cout << "\nYour goal is to reach E.\n";
+    cout << "Collect treasure ($) and avoid hazards (H).\n";
 
     while (!gameOver) {
-        cout << "\n";
+        cout << "MAZE MAP\n";
+
         cout << "      COLUMNS\n";
         cout << "      0 1 2 3 4 5 6 7 8\n";
         for (int r = 0; r < 7; r++) {
@@ -271,46 +308,16 @@ bool Game::playMaze() {
             continue;
         }
 
-        cout << "\nARRAY LESSON\n";
-        cout << "Your move checks maze[" << newRow;
-        cout << "][" << newColumn << "].\n";
+        cout << "\nThe game needs to check maze["
+             << newRow << "][" << newColumn << "].\n";
 
-        if (newRow < 0 || newRow >= 7 ||
-            newColumn < 0 || newColumn >= 9) {
-            cout << "This position is outside the array boundaries.\n";
-            cout << "Valid row indexes are 0 through 6.\n";
-            cout << "Valid column indexes are 0 through 8.\n";
-            loseLife();
-            continue;
-        }
 
-        cout << "The character at this position is: ";
-        cout << maze[newRow][newColumn] << "\n";
 
-        if (maze[newRow][newColumn] == '#') {
-            cout << "This cell contains a wall (#).\n";
-            cout << "The knight cannot move into this array position.\n";
-            loseLife();
-            continue;
-        }
 
-        cout << "This cell is accessible, so the move is allowed.\n";
 
-        knightRow = newRow;
-        knightColumn = newColumn;
 
-        cout << "Your new position is maze[" << knightRow;
-        cout << "][" << knightColumn << "].\n";
 
-        if (maze[knightRow][knightColumn] == 'E') {
-            cout << "\nYou escaped the maze!\n";
-            cout << "You used row and column indexes to navigate ";
-            cout << "a two-dimensional array.\n";
-            return true;
-        }
-    }
-    return false;
-}
+
 
 // LEVEL 2: STACK
 bool Game::playStack() {
