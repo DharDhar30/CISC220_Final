@@ -438,38 +438,102 @@ bool Game::playMaze() {
 // LEVEL 2: STACK
 bool Game::playStack(){
        cout << "\nLEVEL 2: The tower of trials!!! z\n";
-    cout << "The tower is collapsing! Retrieve the key safely.\n";
-    cout << "You can only access the TOP of the stack.\n";
-    cout << "Commands: S = push an item, P = pop, H = hint, Q = quit.\n\n";
 
+        cout << "The tower is collapsing! Retrieve the key safely.\n";
+        cout << "Find the Royal Key and escape before the tower falls.\n";
+        cout << "Explore using WASD and collect items along the way.\n";
+
+        cout << "GET READY FOR A QUICK LESSON :D";
+        cout << "A stack follows LIFO: Last In, First Out.\n";
+        cout << "You can only access the TOP item.\n";
+        cout << "Your inventory is stored in an array of 5 spaces.\n";
+
+        cout << "\nCONTROLS\n";
+        cout << "W = Move up\n";
+        cout << "A = Move left\n";
+        cout << "S = Move down\n";
+        cout << "D = Move right\n";
+        cout << "P = Pop the top item\n";
+        cout << "H = Hint\n";
+        cout << "Q = Quit\n";
+
+        cout << "\nMAP SYMBOLS\n";
+        cout << "K = Knight\n";
+        cout << "S = Shield\n";
+        cout << "P = Potion\n";
+        cout << "G = Guard\n";
+        cout << "R = Royal Key\n";
+        cout << "E = Exit\n";
+        cout << "# = Wall\n";
+
+        // TOWER MAP
+        char tower[7][15] = {
+            "###############",
+            "#...S....#...E#",
+            "#.......#.....#",
+            "#.......G.....#",
+            "#.......#.....#",
+            "#...P...#..R..#",
+            "###############"
+        };
+
+        int knightRow = 1;
+        int knightColumn = 1;
+
+    //Inventory
     int items[5];
     int top = -1;
-    bool hasKey = false;
-    bool escaped = false;
+
+        bool pushChallengeDone = false;
+        bool guardChallengeDone = false;
+        bool exitChallengeDone = false;
+
+        bool guardDefeated = false;
+        bool hasKey = false;
+        bool escaped = false;
+
     while (!gameOver && !escaped) {
-        cout << "\nSTACK (TOP FIRST)\n";
+        cout << "          THE TOWER MAP\n";
+
+        for (int r = 0; r < 7; r++) {
+            for (int c = 0; c < 15; c++) {
+
+                if (r == knightRow && c == knightColumn) {
+                    cout << "K ";
+                } else {
+                    cout << tower[r][c] << " ";
+                }
+            }
+
+            cout << "\n";
+        }
+
+
+        //Display the inventory
+        cout << "             INVENTORY\n";
 
         if (top == -1) {
             cout << "[ EMPTY ]\n";
         } else {
             for (int i = top; i >= 0; i--) {
                 cout << "| ";
-
-                if (items[i] == 1) cout << "Shield";
-                else if (items[i] == 2) cout << "Royal Key";
-                else if (items[i] == 3) cout << "Cursed Stone";
-                else cout << "Potion";
-
-                cout << " |\n";
+                if (items[i] == 1) {
+                    cout << "Shield";
+                } else if (items[i] == 2) {
+                    cout << "Royal Key";
+                } else if (items[i] == 4) {
+                    cout << "Potion";
+                }
+                cout << " | Index " << i << "\n";
             }
-            cout << "---------";
+
+            cout << "       ---------";
+            cout << "       BOTTOM\n";
         }
-        cout << "\nItems available to collect:\n";
-        cout << "1 = Shield\n";
-        cout << "2 = Royal Key\n";
-        cout << "3 = Cursed Stone\n";
-        cout << "4 = Potion\n";
-        cout << "Choose S, P, H, or Q: ";
+
+        cout << "\nTop index: " << top << "\n";
+        cout << "Inventory spaces: " << top + 1 << "/5\n";
+        cout << "\nMove (W/A/S/D), P to pop, H for hint, Q to quit: ";
 
         char choice;
         cin >> choice;
@@ -483,11 +547,18 @@ bool Game::playStack(){
             askForHelp(choice);
             return false;
         }
-        if (choice == 'S' || choice == 's') {
-            if (top == 4) {
-                cout << "Your stack is full!\n";
+
+
+        // MANUAL POP
+        if (choice == 'P' || choice == 'p') {
+            if (top == -1) {
+                cout << "\nYour inventory is empty!\n";
+                cout << "There is nothing to remove.\n";
                 continue;
             }
+
+
+            ///start here
             cout << "Which item do you want to push? Enter 1-4: ";
             int item;
             cin >> item;
