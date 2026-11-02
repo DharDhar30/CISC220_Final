@@ -179,7 +179,7 @@ bool Game::playMaze() {
     cout << "The map is stored inside a two-dimensional array.\n";
     cout << "Learn how the array works to find your way out!\n";
 
-    cout << "QUICK LESS: UNDERSTAND THE ARRAY"
+    cout << "QUICK LESS: UNDERSTAND THE ARRAY";
     cout << "A 2D array stores information in rows and columns.\n";
     cout << "Our maze is stored in maze[7][9].\n";
     cout << "That means 7 rows and 9 columns.\n\n";
@@ -255,6 +255,10 @@ bool Game::playMaze() {
     cout << "\nYour goal is to reach E.\n";
     cout << "Collect treasure ($) and avoid hazards (H).\n";
 
+    bool wallChallengeDone = false;
+    bool boundaryChallengeDone = false;
+    bool treasureChallengeDone = false;
+
     while (!gameOver) {
         cout << "MAZE MAP\n";
 
@@ -288,7 +292,6 @@ bool Game::playMaze() {
             if (gameOver) {
                 return false;
             }
-
             continue;
         }
 
@@ -311,16 +314,129 @@ bool Game::playMaze() {
         cout << "\nThe game needs to check maze["
              << newRow << "][" << newColumn << "].\n";
 
+    //Here are some challenges that will teach about arrays
+        //CHALLENGE: ARRAY BOUNDARIES
+        if (newRow < 0 || newRow >= 7 ||
+            newColumn < 0 || newColumn >= 9) {
+            cout << "\nBOUNDARY CHALLENGE\n";
+            cout << "The knight is trying to leave the array!\n";
+            cout << "The maze has 7 rows and 9 columns.\n\n";
 
+            if (!boundaryChallengeDone) {
+                cout << "Complete the missing number:\n";
+                cout << "if (knightRow < _____)\n";
+                cout << "Enter the number: ";
+                string answer;
+                cin >> answer;
 
+                if (answer == "7") {
+                    cout << "\nCorrect! Valid row indexes are 0 through 6.\n";
+                    cout << "The condition prevents access beyond the array.\n";
+                    score += 5;
+                } else {
+                    cout << "\nThe correct condition is knightRow<7.\n";
+                    cout << "Because the last valid row index is 6.\n";
+                }
+                boundaryChallengeDone = true;
+            }
 
+            cout << "\nThis position is outside the array.\n";
+            loseLife();
+            continue;
+            }
 
+        //Challenge: Those pesky walls! >:(
+        if (maze[newRow][newColumn] == '#') {
+            cout << "\nWALL DETECTED!\n";
+            cout << "The array contains '#' at this position.\n";
+            cout << "The knight cannot walk through walls.\n";
 
+            if (!wallChallengeDone) {
+                cout << "\nCODING CHALLENGE\n";
+                cout << "Complete the condition that checks for a wall:\n\n";
+                cout << "if (maze[newRow][newColumn] == _____)\n";
+                cout << "Enter the missing character, including quotes: ";
+                string answer;
+                cin >> answer;
+                if (answer == "'#'") {
+                    cout << "\nCorrect!\n";
+                    cout << "The expression checks whether the cell contains a wall.\n";
+                    cout << "The == operator compares two values.\n";
+                    score += 5;
+                } else {
+                    cout << "\nThe correct expression is:\n";
+                    cout << "maze[newRow][newColumn] == '#'\n";
+                    cout << "This checks whether the next cell is a wall.\n";
+                }
 
+                wallChallengeDone = true;
+            }
+            loseLife();
+            continue;
+        }
+        //MOving the knight
+        knightRow = newRow;
+        knightColumn = newColumn;
+
+        cout << "\nMove successful!\n";
+        cout << "The knight is now at maze["
+             << knightRow << "][" << knightColumn << "].\n";
+
+        //getting the treasure
+        // TREASURE CHALLENGE
+        if (maze[knightRow][knightColumn] == '$') {
+            cout << "\nTREASURE FOUND!\n";
+            cout << "This cell contains '$'.\n";
+            cout << "We can change the value stored in this array position.\n\n";
+            if (!treasureChallengeDone) {
+                cout << "CODING CHALLENGE\n";
+                cout << "After collecting treasure, the cell should become empty.\n";
+                cout << "Complete the assignment:\n\n";
+                cout << "maze[knightRow][knightColumn] = _____;\n";
+                cout << "Enter the replacement character, including quotes: ";
+
+                string answer;
+                cin >> answer;
+
+                if (answer == "'.'") {
+                    cout << "\nCorrect! You assigned '.' to the array cell.\n";
+                    cout << "The treasure is no longer stored at that position.\n";
+                    score += 5;
+                } else {
+                    cout << "\nThe correct assignment is:\n";
+                    cout << "maze[knightRow][knightColumn] = '.';\n";
+                    cout << "This changes the cell into an empty path.\n";
+                }
+                treasureChallengeDone = true;
+            }
+            maze[knightRow][knightColumn] = '.';
+            score += 10;
+
+            cout << "\nThe treasure disappeared from the maze!\n";
+            cout << "The array now stores '.' at this position.\n";
+            cout << "You earned 10 treasure points!\n";
+        }
+
+        //Boobytrap
+        if (maze[knightRow][knightColumn] == 'H') {
+            cout << "\nYou stepped into a boobytrap!\n";
+            loseLife();
+            knightRow = 3;
+            knightColumn = 1;
+            continue;
+        }
+
+        //the exit
+        if (maze[knightRow][knightColumn] == 'E') {
+            cout << "          MAZE ESCAPED!\n";
+            cout << "You reached the exit!\n";
+            return true;
+        }
+    }
 
 
 // LEVEL 2: STACK
-bool Game::playStack() {
+bool Game::playStack(){
        cout << "\nLEVEL 2: The tower of trials!!! z\n";
     cout << "The tower is collapsing! Retrieve the key safely.\n";
     cout << "You can only access the TOP of the stack.\n";
@@ -468,7 +584,7 @@ const char* Game::searchHash(int key) {
 }
 
 
-
+// Level 3
 bool Game::playHashMap() {
     cout << "\nLEVEL 3: THE LOCKED GATE\n";
     cout << "DATA STRUCTURE: HASH TABLE\n\n";
@@ -716,6 +832,7 @@ bool Game::playHashMap() {
 }
 
 
+    //LEVEL 4
 bool Game::playLinkedList() {
     cout << "\nLEVEL 4: THE BROKEN RIVER\n";
     cout << "DATA STRUCTURE: SINGLY LINKED LIST\n\n";
