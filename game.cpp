@@ -835,10 +835,6 @@ bool Game::playStack(){
 }
 
 // LEVEL 3: HASH MAP
-int Game::hashFunction(int key) {
-    return key % 10;
-}
-
 void Game::setupHashTable() {
     for (int i = 0; i < 10; i++) {
         hashTable[i].occupied = false;
@@ -891,18 +887,89 @@ bool Game::playHashMap() {
     cout << "\nLEVEL 3: THE LOCKED GATE\n";
     cout << "DATA STRUCTURE: HASH TABLE\n\n";
 
-    cout << "The castle gate is protected by a magical security system.\n";
-    cout << "You must retrieve the Royal Key to open the gate.\n\n";
+        cout << "The knight has reached another section of the castle.\n";
+        cout << "A locked gate blocks the path to the princess.\n";
+        cout << "You must find the Royal Key using the castle's hash table.\n";
 
-    cout << "A hash table uses a key to calculate where an item belongs.\n";
-    cout << "Our hash function is: key % 10\n";
-    cout << "If a slot is occupied, linear probing checks the next slot.\n";
+        char castle[7][17] = {
+            "#################",
+            "#K....#.........#",
+            "#.....#.........#",
+            "#.....C.........#",
+            "#.....#.........#",
+            "#.............E.#",
+            "#################"
+        };
 
-    setupHashTable();
+        int knightRow = 1;
+        int knightColumn = 1;
+        bool hasKey = false;
+        bool consoleCompleted = false;
+        bool escaped = false;
 
-    bool correct = false;
-    int tries = 0;
-    char answer;
+        setupHashTable();
+
+        while (!gameOver && !escaped) {
+            cout << "\nCASTLE MAP\n";
+
+            for (int i = 0; i < 7; i++) {
+                for (int j = 0; j < 17; j++) {
+                    if (i == knightRow && j == knightColumn) {
+                        cout << "K ";
+                    } else {
+                        cout << castle[i][j] << " ";
+                    }
+                }
+                cout << "\n";
+            }
+
+            cout << "\nK = Knight\n";
+            cout << "C = Security Console\n";
+            cout << "E = Locked Exit\n";
+            cout << "# = Wall\n";
+
+            if (hasKey) {
+                cout << "\nRoyal Key found! Reach the exit.\n";
+            }
+
+            cout << "\nMove with W, A, S, D. H = Hint. Q = Quit.\n";
+            cout << "Your move: ";
+
+            char move;
+            cin >> move;
+
+            if (move == 'Q' || move == 'q') {
+                askForHelp(move);
+                return false;
+            }
+
+            if (move == 'H' || move == 'h') {
+                askForHelp(move);
+                cout << "Find the security console marked C.\n";
+                cout << "You must solve its hash table challenges.\n";
+                continue;
+            }
+
+            int newRow = knightRow;
+            int newColumn = knightColumn;
+
+            if (move == 'W' || move == 'w') {
+                newRow--;
+            } else if (move == 'S' || move == 's') {
+                newRow++;
+            } else if (move == 'A' || move == 'a') {
+                newColumn--;
+            } else if (move == 'D' || move == 'd') {
+                newColumn++;
+            } else {
+                cout << "Invalid movement.\n";
+                continue;
+            }
+
+            if (castle[newRow][newColumn] == '#') {
+                cout << "A wall blocks your path!\n";
+                continue;
+            }
 
     // CHALLENGE 1: CALCULATE THE HASH
     cout << "CHALLENGE 1: FIND THE STARTING SLOT\n";
