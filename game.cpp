@@ -557,52 +557,283 @@ bool Game::playStack(){
                 continue;
             }
 
+            cout << "\nPOP CHALLENGE\n";
+            cout << "Which expression removes the top item?\n\n";
 
-            ///start here
-            cout << "Which item do you want to push? Enter 1-4: ";
-            int item;
-            cin >> item;
-            if (item < 1 || item > 4) {
-                cout << "That item does not exist.\n";
-                continue;
-            }
+            cout << "1. items[top--]\n";
+            cout << "2. items[++top]\n";
+            cout << "3. items[top]\n";
 
-            if (item == 3) {
-                cout << "You cannot collect the cursed stone. It is too dangerous!\n";
-                continue;
-            }
+            int answer = 0;
 
-            items[++top] = item;
-            cout << "PUSH: item added at index " << top << ".\n";
-        } else if (choice == 'P' || choice == 'p') {
-            if (top == -1) {
-                cout << "The stack is empty. Nothing to pop!\n";
-                continue;
-            }
+            while (answer != 1) {
+                cout << "Your answer: ";
+                cin >> answer;
+
+                if (answer != 1) {
+                    cout << "Not quite! Try again.\n";
+                    cout << "Hint: You need to retrieve the item and decrease top.\n";
+                }
+
+            } while (answer != 1);
 
             int item = items[top--];
 
-            if (item == 2) {
-                hasKey = true;
-                cout << "You retrieved the Royal Key!\n";
-            } else if (item == 1) {
+            cout << "\nCorrect!\n";
+            cout << "You used: items[top--];\n";
+            cout << "The item was removed from the stack.\n";
+            cout << "The new top index is " << top << ".\n";
+
+            if (item == 1) {
                 cout << "You removed the Shield.\n";
-            } else {
+            } else if (item == 2) {
+                cout << "You removed the Royal Key.\n";
+                hasKey = true;
+            } else if (item == 4) {
                 cout << "You removed the Potion.\n";
             }
-            cout << "POP: top index decreased to " << top << ".\n";
+
+            continue;
+        }
+
+        // MOVEMENT
+        int newRow = knightRow;
+        int newColumn = knightColumn;
+
+        if (choice == 'W' || choice == 'w') {
+            newRow--;
+        } else if (choice == 'S' || choice == 's') {
+            newRow++;
+        } else if (choice == 'A' || choice == 'a') {
+            newColumn--;
+        } else if (choice == 'D' || choice == 'd') {
+            newColumn++;
+        } else {
+            cout << "Invalid movement!\n";
+            continue;
+        }
+
+        //If a wall block you
+        if (tower[newRow][newColumn] == '#') {
+            cout << "\nA wall blocks your path!\n";
+            continue;
+        }
+        char nextCell = tower[newRow][newColumn];
+
+        //Collect items
+        if (nextCell == 'S' || nextCell == 'P' || nextCell == 'R') {
+            if (top == 4) {
+                cout << "\nYour inventory is full!\n";
+                cout << "Remove an item before collecting another.\n";
+                continue;
+            }
+
+            int item;
+
+            if (nextCell == 'S') {
+                item = 1;
+                cout << "\nYou found a SHIELD!\n";
+            } else if (nextCell == 'P') {
+                item = 4;
+                cout << "\nYou found a POTION!\n";
+            } else {
+                item = 2;
+                cout << "\nYOU FOUND THE ROYAL KEY!\n";
+            }
+
+            // Push challenge
+            if (!pushChallengeDone) {
+                cout << "       CODING CHALLENGE: PUSH\n";
+
+                cout << "You need to add this item to your inventory.\n";
+                cout << "Complete the missing expression:\n\n";
+
+                cout << "items[________] = item;\n\n";
+
+                cout << "1. ++top\n";
+                cout << "2. top--\n";
+                cout << "3. top + 1\n";
+
+                int answer = 0;
+
+                while (answer != 1) {
+                    cout << "Your answer: ";
+                    cin >> answer;
+
+                    if (answer != 1) {
+                        cout << "Incorrect! Try again.\n";
+                        cout << "Hint: Increase top before storing the item.\n";
+                    }
+
+                } while (answer != 1);
+
+                cout << "\nCorrect!\n";
+                cout << "items[++top] = item;\n";
+                cout << "You understand how PUSH works! YIPPEEE!\n";
+
+                pushChallengeDone = true;
+                score += 5;
+                cout << "You earned 5 points!\n";
+            }
+
+            // Pushing
+            items[++top] = item;
+
+            cout << "\nPUSH SUCCESSFUL!\n";
+            cout << "Item added at index " << top << ".\n";
+            cout << "The top index is now " << top << ".\n";
+
+            tower[newRow][newColumn] = '.';
+        }
+
+        // Guard
+        if (nextCell == 'G' && !guardDefeated) {
+
+            cout << "             GUARD!\n";
+
+            cout << "A guard blocks the only passage!\n";
+            cout << "You must use an item from your stack to get past.\n";
+
+            //Guard challenge
+            if (!guardChallengeDone) {
+
+                cout << "\nCODING CHALLENGE: ACCESS THE TOP\n";
+                cout << "Before removing an item, we need to check\n";
+                cout << "that the stack is not empty.\n\n";
+
+                cout << "Which condition checks for an empty stack?\n\n";
+
+                cout << "1. top == -1\n";
+                cout << "2. top == 5\n";
+                cout << "3. top == 0\n";
+
+                int answer = 0;
+                while (answer != 1) {
+                    cout << "Your answer: ";
+                    cin >> answer;
+
+
+                    if (answer != 1) {
+                        cout << "Incorrect! Try again.\n";
+                        cout << "Hint: An empty stack starts with top = -1.\n";
+                    }
+
+                } while (answer != 1);
+                cout << "\nCorrect!\n";
+                cout << "if (top == -1)\n";
+                cout << "This prevents removing an item from an empty stack.\n";
+
+                guardChallengeDone = true;
+                score += 5;
+                cout << "You earned 5 points!\n";
+            }
+
+            if (top == -1) {
+                cout << "\nYour stack is empty!\n";
+                cout << "Find an item before challenging the guard.\n";
+                continue;
+            }
+
+            cout << "\nThe guard demands an item!\n";
+            cout << "You must sacrifice the TOP item in your stack.\n";
+
+            int sacrificedItem = items[top--];
+
+            cout << "\nPOP: items[top--];\n";
+            cout << "You sacrificed the top item.\n";
+            cout << "The new top index is " << top << ".\n";
+
+            if (sacrificedItem == 1) {
+                cout << "The guard takes your Shield!\n";
+            } else if (sacrificedItem == 4) {
+                cout << "The guard takes your Potion!\n";
+            }
+
+            cout << "\nThe guard steps aside!\n";
+            guardDefeated = true;
+            tower[newRow][newColumn] = '.';
+        }
+
+        // Exit
+        if (nextCell == 'E') {
+
+            cout << "             LOCKED EXIT\n";
+
+            cout << "The tower exit is locked!\n";
+            cout << "You need the Royal Key at the TOP of your stack.\n";
+
+            if (!exitChallengeDone) {
+
+                cout << "\nFINAL CODING CHALLENGE\n";
+                cout << "Which expression checks whether the top item\n";
+                cout << "is the Royal Key?\n\n";
+
+                cout << "1. items[top] == 2\n";
+                cout << "2. items[0] == 2\n";
+                cout << "3. top == 2\n";
+
+                int answer = 0;
+                while (answer != 1) {
+                    cout << "Your answer: ";
+                    cin >> answer;
+
+
+                    if (answer != 1) {
+                        cout << "Incorrect! Try again.\n";
+                        cout << "Hint: Access the item using its top index.\n";
+                    }
+
+                } while (answer != 1);
+
+                cout << "\nCorrect!\n";
+                cout << "items[top] == 2\n";
+                cout << "You can now check the item at the top of the stack.\n";
+
+                exitChallengeDone = true;
+                score += 5;
+                cout << "You earned 5 points!\n";
+            }
+
+            if (top == -1 || items[top] != 2) {
+                cout << "\nThe Royal Key is not at the top!\n";
+                cout << "Find it before you can unlock the exit.\n";
+                continue;
+            }
+
+            cout << "\nThe Royal Key is at the top of your stack!\n";
+            cout << "Removing it now..\n";
+
+            int key = items[top--];
+            if (key == 2) {
+                hasKey = true;
+                cout << "You used the Royal Key!\n";
+            }
 
             if (hasKey) {
-                cout << "\nYou unlock the tower exit and escape!\n";
+                cout << "          TOWER ESCAPED!\n";
+
+                cout << "You escaped the collapsing tower!\n";
                 escaped = true;
             }
-        } else {
-            cout << "Invalid command.\n";
+
+            continue;
         }
+
+        // MOVE THE KNIGHT
+        knightRow = newRow;
+        knightColumn = newColumn;
+
+        cout << "\nYou moved to row " << knightRow;
+        cout << ", column " << knightColumn << ".\n";
     }
-    if (gameOver) return false;
+
+    if (gameOver) {
+        return false;
+    }
+
     return escaped;
 }
+
 // LEVEL 3: HASH MAP
 int Game::hashFunction(int key) {
     return key % 10;
@@ -1157,11 +1388,9 @@ bool Game::playGraph(){
                 nearest = i;
             }
         }
-
         if (nearest == -1 || distance[nearest] == 9999) {
             break;
         }
-
         visited[nearest] = true;
         cout << "Visit location " << char('A' + nearest);
         cout << ", current cost: " << distance[nearest] << "\n";
@@ -1176,9 +1405,7 @@ bool Game::playGraph(){
             }
         }
     }
-
     cout << "\nShortest cost from A to D: " << distance[3] << "\n";
-
     cout << "Enter 2 to take the shortest route, ";
     cout << "H for a hint, or Q to quit: ";
 
