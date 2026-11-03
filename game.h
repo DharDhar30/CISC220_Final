@@ -30,7 +30,7 @@ private:
         bool occupied;
     };
 
-    HashEntry hashTable[10];
+        HashEntry hashTable[10];
 
     // Level 4: Linked-list node.
     struct ListNode {

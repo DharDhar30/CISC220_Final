@@ -314,7 +314,7 @@ bool Game::playMaze() {
         cout << "\nThe game needs to check maze["
              << newRow << "][" << newColumn << "].\n";
 
-    //Here are some challenges that will teach about arrays
+        //Here are some challenges that will teach about arrays
         //CHALLENGE: ARRAY BOUNDARIES
         if (newRow < 0 || newRow >= 7 ||
             newColumn < 0 || newColumn >= 9) {
@@ -433,6 +433,8 @@ bool Game::playMaze() {
             return true;
         }
     }
+    return false;
+}
 
 
 // LEVEL 2: STACK
@@ -467,7 +469,7 @@ bool Game::playStack(){
         cout << "# = Wall\n";
 
         // TOWER MAP
-        char tower[7][15] = {
+        char tower[7][16] = {
             "###############",
             "#...S....#...E#",
             "#.......#.....#",
@@ -835,6 +837,7 @@ bool Game::playStack(){
 }
 
 // LEVEL 3: HASH MAP
+
 void Game::setupHashTable() {
     for (int i = 0; i < 10; i++) {
         hashTable[i].occupied = false;
@@ -844,8 +847,13 @@ void Game::setupHashTable() {
 
     insertHash(12, "Old Coin");
     insertHash(25, "Broken Glass");
-    insertHash(37, "Royal Key");
+    insertHash(17, "Cursed Ring");
+    insertHash(27, "Royal Key");
     insertHash(48, "Empty Bottle");
+}
+
+int Game::hashFunction(int key) {
+    return key % 10;
 }
 
 void Game::insertHash(int key, const char* value) {
@@ -869,19 +877,16 @@ const char* Game::searchHash(int key) {
         if (!hashTable[index].occupied) {
             return "NOT FOUND";
         }
-
         if (hashTable[index].key == key) {
             return hashTable[index].value;
         }
 
+        // Check the next position after a collision.
         index = (index + 1) % 10;
         attempts++;
     }
-
     return "NOT FOUND";
 }
-
-
 // Level 3
 bool Game::playHashMap() {
     cout << "\nLEVEL 3: THE LOCKED GATE\n";
@@ -891,7 +896,7 @@ bool Game::playHashMap() {
         cout << "A locked gate blocks the path to the princess.\n";
         cout << "You must find the Royal Key using the castle's hash table.\n";
 
-        char castle[7][17] = {
+        char castle[7][18] = {
             "#################",
             "#K....#.........#",
             "#.....#.........#",
@@ -971,63 +976,62 @@ bool Game::playHashMap() {
                 continue;
             }
 
+            // Reach the security console
+            if (castle[newRow][newColumn] == 'C') {
+                if (consoleCompleted) {
+                    knightRow = newRow;
+                    knightColumn = newColumn;
+                    continue;
+                }
+
+                cout << "\nYou reached the security console!\n";
+                cout << "The hash table controls the locked gate.\n";
+                cout << "Our hash function is: key % 10\n";
+
+                // DISPLAY THE INITIAL HASH TABLE
+                cout << "\nCURRENT HASH TABLE\n";
+
+                for (int i = 0; i < 10; i++) {
+                    cout << "[" << i << "] ";
+
+                    if (hashTable[i].occupied) {
+                        cout << hashTable[i].key << ": "
+                             << hashTable[i].value;
+                    } else {
+                        cout << "EMPTY";
+                    }
+
+                    cout << "\n";
+                }
+
     // CHALLENGE 1: CALCULATE THE HASH
     cout << "CHALLENGE 1: FIND THE STARTING SLOT\n";
 
+                char answer = ' ';
     cout << "The Royal Key has key 37.\n";
     cout << "Calculate: 37 % 10\n";
     cout << "Which index should we check first?\n";
 
-    while (!gameOver && !correct && tries < 3) {
-        cout << "Enter an index from 0 to 9 (H for hint, Q to quit): ";
+    while (!gameOver && answer != '7') {
+        cout << "Enter the index (H for hint): ";
         cin >> answer;
 
         if (answer == 'H' || answer == 'h') {
             askForHelp(answer);
-            cout << "37 % 10 = 7. The search begins at index 7.\n";
-            continue;
-        }
-
-        if (answer == 'Q' || answer == 'q') {
+            cout << "37 % 10 = 7.\n";
+        } else if (answer == 'Q' || answer == 'q') {
             askForHelp(answer);
             return false;
-        }
-
-        if (answer == '7') {
-            cout << "\nCorrect! 37 % 10 = 7.\n";
-            cout << "The hash function gives us index 7.\n";
-            score += 5;
-            correct = true;
-        } else {
-            cout << "Not quite. Divide 37 by 10 and find the remainder.\n";
-            tries++;
+        } else if (answer != '7') {
+            cout << "Incorrect. Find the remainder when 37 is divided by 10.\n";
         }
     }
+                if (gameOver) {
+                    return false;
+                }
 
-    if (gameOver) {
-        return false;
-    }
-
-    if (!correct) {
-        cout << "You ran out of tries for this challenge.\n";
-        return false;
-    }
-
-    // DISPLAY THE INITIAL HASH TABLE
-    cout << "\nCURRENT HASH TABLE\n";
-
-    for (int i = 0; i < 10; i++) {
-        cout << "[" << i << "] ";
-
-        if (hashTable[i].occupied) {
-            cout << hashTable[i].key << ": "
-                 << hashTable[i].value;
-        } else {
-            cout << "EMPTY";
-        }
-
-        cout << "\n";
-    }
+                cout << "Correct! The search begins at index 7.\n";
+                score += 5;
 
     // CHALLENGE 2: RESOLVE COLLISIONS
     cout << "CHALLENGE 2: RESOLVE THE COLLISION\n";
@@ -1125,44 +1129,32 @@ bool Game::playHashMap() {
     cout << "Now imagine someone asks the hash table to find key 37.\n";
     cout << "The search calculates 37 % 10 = 7.\n";
     cout << "Where should the search begin?\n";
+                answer = ' ';
 
-    correct = false;
-    tries = 0;
+                while (!gameOver && answer != '7') {
+                    cout << "Where should the search begin? ";
+                    cout << "(H for hint): ";
+                    cin >> answer;
 
-    while (!gameOver && !correct && tries < 3) {
-        cout << "Enter the starting index (H for hint, Q to quit): ";
-        cin >> answer;
+                    if (answer == 'H' || answer == 'h') {
+                        askForHelp(answer);
+                        cout << "The starting index is 7.\n";
+                    } else if (answer == 'Q' || answer == 'q') {
+                        askForHelp(answer);
+                        return false;
+                    } else if (answer != '7') {
+                        cout << "Incorrect. Calculate 37 % 10.\n";
+                    }
+                }
 
-        if (answer == 'H' || answer == 'h') {
-            askForHelp(answer);
-            cout << "The hash function gives index 7.\n";
-            continue;
-        }
+                if (gameOver) {
+                    return false;
+                }
 
-        if (answer == 'Q' || answer == 'q') {
-            askForHelp(answer);
-            return false;
-        }
+                cout << "Correct! The search begins at index 7.\n";
+                score += 5;
 
-        if (answer == '7') {
-            cout << "Correct! The search begins at index 7.\n";
-            correct = true;
-            score += 5;
-        } else {
-            cout << "Try again. Calculate 37 % 10.\n";
-            tries++;
-        }
-    }
-
-    if (gameOver) {
-        return false;
-    }
-
-    if (!correct) {
-        cout << "You ran out of tries for this challenge.\n";
-        return false;
-    }
-
+                //Search
     cout << "\nSEARCH VISUALIZATION\n";
 
     int searchIndex = hashFunction(37);
@@ -1183,23 +1175,53 @@ bool Game::playHashMap() {
             found = true;
             cout << "MATCH! The Royal Key has been found.\n";
         } else {
-            cout << "Not the key we need. Probe the next index.\n";
+            cout << "Not the key. Checking the next index.\n";
             searchIndex = (searchIndex + 1) % 10;
         }
     }
 
-    if (found && searchHash(37) != 0) {
-        cout << "\nThe gate recognizes the Royal Key!\n";
-        cout << "The locked gate swings open. Level 3 complete!\n";
-        cout << "You learned hashing, collisions, linear probing, and searching.\n";
-        score += 10;
-        return true;
+                if (gameOver) {
+                    return false;
+                }
+
+                if (found) {
+                    cout << "\nThe security console accepts the Royal Key!\n";
+                    cout << "The locked gate is now open.\n";
+                    hasKey = true;
+                    consoleCompleted = true;
+                    castle[3][6] = '.';
+                    score += 10;
+                }
+            }
+
+            // REACH THE EXIT
+            else if (castle[newRow][newColumn] == 'E') {
+                if (!hasKey) {
+                    cout << "The gate is still locked!\n";
+                    cout << "You must find the Royal Key first.\n";
+                    continue;
+                }
+
+                knightRow = newRow;
+                knightColumn = newColumn;
+
+                cout << "\nThe Royal Key unlocks the gate!\n";
+                cout << "You escaped the castle. Level 3 complete!\n";
+                cout << "You learned hashing, collisions, linear probing, and searching.\n";
+
+                escaped = true;
+            } else {
+                knightRow = newRow;
+                knightColumn = newColumn;
+            }
+        }
+
+        if (gameOver) {
+            return false;
+        }
+
+        return escaped;
     }
-
-    cout << "The Royal Key could not be found. Try the level again.\n";
-    return false;
-}
-
 
     //LEVEL 4
 bool Game::playLinkedList() {
