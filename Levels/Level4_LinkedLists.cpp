@@ -62,7 +62,7 @@ bool Game::playLinkedList() {
     bool crossed = false;
 
     int repairs = 0;
-    int stonesCrossed = 0;
+    int stonesCrossed = 1;
 
     ListNode* current = head;
 
@@ -163,11 +163,8 @@ bool Game::playLinkedList() {
                 cout << "[" << temp->data << "] -> ";
                 temp = temp->next;
             }
-
             cout << "NULL\n";
-
             temp = fragment4;
-
             cout << "\nCHAIN 4:\n";
 
             while (temp != nullptr) {

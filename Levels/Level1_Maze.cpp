@@ -11,18 +11,13 @@ bool Game::playMaze() {
     cout << "The map is stored inside a two-dimensional array.\n";
     cout << "Learn how the array works to find your way out!\n";
 
-    cout << "QUICK LESS: UNDERSTAND THE ARRAY";
+    cout << "QUICK LESSON: THE ARRAY";
     cout << "A 2D array stores information in rows and columns.\n";
     cout << "Our maze is stored in maze[7][9].\n";
     cout << "That means 7 rows and 9 columns.\n\n";
 
     cout << "Each cell has two indexes:\n";
     cout << "maze[row][column]\n\n";
-
-    cout << "Remember:\n";
-    cout << "- The first index identifies the row.\n";
-    cout << "- The second index identifies the column.\n";
-    cout << "- Array indexes start at 0, not 1.\n\n";
 
     cout << "\nYOUR FIRST CODING CHALLENGE\n";
     cout << "The knight starts at row 3, column 1.\n";
@@ -42,7 +37,6 @@ bool Game::playMaze() {
             cout << "Hint: The first index represents the row.\n";
             continue;
         }
-
         cout << "Enter the second index: ";
         cin >> columnAnswer;
 
@@ -50,7 +44,6 @@ bool Game::playMaze() {
             cout << "Hint: The second index represents the column.\n";
             continue;
         }
-
         if (rowAnswer == "knightRow" &&
             columnAnswer == "knightColumn") {
             indexCorrect = true;
@@ -147,7 +140,7 @@ bool Game::playMaze() {
              << newRow << "][" << newColumn << "].\n";
 
         //Here are some challenges that will teach about arrays
-        //CHALLENGE: ARRAY BOUNDARIES
+        //array boundaries
         if (newRow < 0 || newRow >= 7 ||
             newColumn < 0 || newColumn >= 9) {
             cout << "\nBOUNDARY CHALLENGE\n";
@@ -215,7 +208,7 @@ bool Game::playMaze() {
              << knightRow << "][" << knightColumn << "].\n";
 
         //getting the treasure
-        // TREASURE CHALLENGE
+        // TREASURE CHALLENGE!!!!1
         if (maze[knightRow][knightColumn] == '$') {
             cout << "\nTREASURE FOUND!\n";
             cout << "This cell contains '$'.\n";
@@ -248,8 +241,7 @@ bool Game::playMaze() {
             cout << "The array now stores '.' at this position.\n";
             cout << "You earned 10 treasure points!\n";
         }
-
-        //Boobytrap
+        //Boobytrap oh noooooo
         if (maze[knightRow][knightColumn] == 'H') {
             cout << "\nYou stepped into a boobytrap!\n";
             loseLife();
@@ -257,7 +249,6 @@ bool Game::playMaze() {
             knightColumn = 1;
             continue;
         }
-
         //the exit
         if (maze[knightRow][knightColumn] == 'E') {
             cout << "          MAZE ESCAPED!\n";

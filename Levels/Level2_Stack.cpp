@@ -127,7 +127,6 @@ bool Game::playStack(){
 
             cout << "\nPOP CHALLENGE\n";
             cout << "Which expression removes the top item?\n\n";
-
             cout << "1. items[top--]\n";
             cout << "2. items[++top]\n";
             cout << "3. items[top]\n";
@@ -164,7 +163,7 @@ bool Game::playStack(){
             continue;
         }
 
-        // MOVEMENT
+        // Moving
         int newRow = knightRow;
         int newColumn = knightColumn;
 

@@ -136,7 +136,6 @@ void Game::play() {
             level++;
         }
     }
-
     if (level > 6 && !gameOver) {
         cout << "           QUEST COMPLETE!\n";
         cout << "You found the princess and saved the kingdom!\n";
@@ -183,113 +182,7 @@ void Game::playTestLevel(int selectedLevel) {
 
 
 
-// LEVEL 5: GRAPH AND DIJKSTRA'S ALGORITHM
 
-bool Game::playGraph(){
-    cout << "\nLEVEL 5: THE CURSED FOREST\n";
-    cout << "DATA STRUCTURE: GRAPH\n\n";
-
-    cout << "A graph contains vertices and edges.\n";
-    cout << "Vertices are locations. Edges are roads.\n";
-    cout << "Each road has a travel cost.\n";
-    cout << "Dijkstra's algorithm finds a shortest path by cost.\n\n";
-
-    cout << "The forest has four locations: A, B, C, D.\n";
-    cout << "Road costs:\n";
-    cout << "A to B: 2\n";
-    cout << "A to C: 5\n";
-    cout << "B to C: 1\n";
-    cout << "B to D: 5\n";
-    cout << "C to D: 2\n\n";
-
-    cout << "Knowledge check:\n";
-    cout << "Which route is cheaper from A to D?\n";
-    cout << "1. A -> B -> D, cost 7\n";
-    cout << "2. A -> B -> C -> D, cost 5\n";
-    cout << "Answer: ";
-
-    int answer;
-    cin >> answer;
-
-    if (answer == 2) {
-        cout << "Correct! The total cost is 2 + 1 + 2 = 5.\n";
-        score += 5;
-    } else {
-        cout << "The second route costs 5, which is less than 7.\n";
-    }
-
-    // Adjacency matrix: 0 means no direct road.
-    int graph[4][4] = {
-        {0, 2, 5, 0},
-        {2, 0, 1, 5},
-        {5, 1, 0, 2},
-        {0, 5, 2, 0}
-    };
-
-    int distance[4];
-    bool visited[4];
-
-    for (int i = 0; i < 4; i++) {
-        distance[i] = 9999;
-        visited[i] = false;
-    }
-
-    distance[0] = 0;
-
-    cout << "\nRunning Dijkstra's algorithm from A...\n";
-
-    for (int step = 0; step < 4; step++) {
-        int nearest = -1;
-
-        for (int i = 0; i < 4; i++) {
-            if (!visited[i] &&
-                (nearest == -1 || distance[i] < distance[nearest])) {
-                nearest = i;
-            }
-        }
-        if (nearest == -1 || distance[nearest] == 9999) {
-            break;
-        }
-        visited[nearest] = true;
-        cout << "Visit location " << char('A' + nearest);
-        cout << ", current cost: " << distance[nearest] << "\n";
-
-        for (int next = 0; next < 4; next++) {
-            if (graph[nearest][next] > 0 &&
-                distance[nearest] + graph[nearest][next] < distance[next]) {
-                distance[next] =distance[nearest]+graph[nearest][next];
-                cout << "  Update cost to ";
-                cout << char('A' + next) << ": ";
-                cout << distance[next] << "\n";
-            }
-        }
-    }
-    cout << "\nShortest cost from A to D: " << distance[3] << "\n";
-    cout << "Enter 2 to take the shortest route, ";
-    cout << "H for a hint, or Q to quit: ";
-
-    while (!gameOver) {
-        char choice;
-        cin >> choice;
-
-        if (askForHelp(choice)) {
-            if (gameOver) return false;
-            continue;
-        }
-
-        if (choice == '2') {
-            cout << "You reached the other side of the forest!\n";
-            return true;
-        }
-
-        cout << "That route is not the shortest. Try again.\n";
-        loseLife();
-        cout << "Enter 2 to take the shortest route, H for a hint, ";
-        cout << "or Q to quit: ";
-    }
-
-    return false;
-}
 
 // LEVEL 6: BINARY SEARCH TREE
 Game::TreeNode* Game::insertTree(TreeNode* root, int value) {
